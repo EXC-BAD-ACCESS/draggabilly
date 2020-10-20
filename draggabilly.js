@@ -95,7 +95,6 @@ proto._create = function() {
   this.position = {};
   this._getPosition();
 
-  this._pageYPosition = 0;
   this._scrollTimer = null;
 
   this.startPoint = { x: 0, y: 0 };
@@ -247,7 +246,6 @@ proto.dragStart = function( event, pointer ) {
   this.dispatchEvent( 'dragStart', event, [ pointer ] );
   // start animation
   this.animate();
-  this._startStopScroll(event)
 };
 
 proto.measureContainment = function() {
@@ -333,6 +331,7 @@ proto.dragMove = function( event, pointer, moveVector ) {
   this.dragPoint.y = dragY;
 
   this.dispatchEvent( 'dragMove', event, [ pointer, moveVector ] );
+  this._startStopScroll(event)
 };
 
 function applyGrid( value, grid, method ) {
@@ -383,39 +382,35 @@ proto.dragEnd = function( event, pointer ) {
 };
 
 proto._startStopScroll = function(e) {
-		if (e) {
-			this._pageYPosition = e.pageY;
-		}
+    const rect = this.element.getClientRects()[0]
+    const headerHeight = 120
+    const overlap = 30
 
-		if (this._pageYPosition > window.innerHeight + window.scrollY - 120 - 50) {
-			if (! this._scrollTimer) {
+    if(this.position.y > this.startPosition.y && rect.bottom > window.innerHeight + overlap) {
+      if (! this._scrollTimer) {
 				this._scrollTimer = setTimeout(() => {
 					window.scrollBy(0, 5);
 
-					this._pageYPosition += 5;
 					this._scrollTimer = null;
 					this._startStopScroll();
-				}, 25);
+				}, 10);
 			}
-		}
-		else if (this._pageYPosition < window.scrollY + 120 + 50) {
-			if (! this._scrollTimer) {
+    } else if(this.position.y < this.startPosition.y && rect.top < headerHeight - overlap) {
+      if (! this._scrollTimer) {
 				this._scrollTimer = setTimeout(() => {
 					window.scrollBy(0, -5);
 
-					this._pageYPosition -= 5;
 					this._scrollTimer = null;
 					this._startStopScroll();
-				}, 25);
+				}, 10);
 			}
-		}
-		else {
-			if (this._scrollTimer) {
+    } else {
+      if (this._scrollTimer) {
 				clearTimeout(this._scrollTimer);
 				this._scrollTimer = null;
 			}
-		}
-	}
+    }
+}
 
 proto._stopScroll = function() {
 		clearTimeout(this._scrollTimer);
