@@ -387,7 +387,7 @@ proto._startStopScroll = function(e) {
 			this._pageYPosition = e.pageY;
 		}
 
-		if (this._pageYPosition > window.innerHeight + window.scrollY - 50) {
+		if (this._pageYPosition > window.innerHeight + window.scrollY - 120 - 50) {
 			if (! this._scrollTimer) {
 				this._scrollTimer = setTimeout(() => {
 					window.scrollBy(0, 5);
@@ -398,7 +398,7 @@ proto._startStopScroll = function(e) {
 				}, 25);
 			}
 		}
-		else if (this._pageYPosition < window.scrollY + 50) {
+		else if (this._pageYPosition < window.scrollY + 120 + 50) {
 			if (! this._scrollTimer) {
 				this._scrollTimer = setTimeout(() => {
 					window.scrollBy(0, -5);
