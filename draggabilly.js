@@ -95,6 +95,9 @@ proto._create = function() {
   this.position = {};
   this._getPosition();
 
+  this._pageYPosition = 0;
+  this._scrollTimer = null;
+
   this.startPoint = { x: 0, y: 0 };
   this.dragPoint = { x: 0, y: 0 };
 
@@ -379,12 +382,7 @@ proto.dragEnd = function( event, pointer ) {
   this._stopScroll();
 };
 
-
-
-var _pageYPosition;
-var _scrollTimer;
-
-	function _startStopScroll(e) {
+proto._startStopScroll = function(e) {
 		if (e) {
 			this._pageYPosition = e.pageY;
 		}
@@ -419,7 +417,7 @@ var _scrollTimer;
 		}
 	}
 
-	function _stopScroll() {
+proto._stopScroll = function() {
 		clearTimeout(this._scrollTimer);
 		this._scrollTimer = null;
 	}
